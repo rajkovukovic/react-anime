@@ -10,7 +10,7 @@ import {
   Logo6,
 } from './Logos'
 
-const icons = [
+const LOGOS = [
   Logo1,
   Logo2,
   Logo3,
@@ -19,17 +19,18 @@ const icons = [
   Logo6,
 ]
 
-const ComplexComponent = ({ iconIndex, backgroundColor, color, label }) => (
-  <div
-    className='complex-component'
-    style={{
-      backgroundColor,
-      color
-    }}
-  >
-    <p>{label}</p>
-    {icons[iconIndex]}
-  </div>
-)
+class ComplexComponent extends React.Component {
+  render () {
+    const { iconIndex, backgroundColor, color, label } = this.props
+    const Icon = LOGOS[iconIndex]
+    return (
+      <div className='complex-component' style={{ backgroundColor, color }} >
+        <p>{label}</p>
+        {/* <Logo /> */}
+        <Logo1 />
+      </div>
+    )
+  }
+}
 
 export default ComplexComponent

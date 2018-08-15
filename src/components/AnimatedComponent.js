@@ -39,6 +39,9 @@ class AnimatedComponent extends React.Component {
   applyAnimationPropsToDomRef = () => {
     const { computedAnimationProps, domRef } = this
     if (domRef) {
+      if (!domRef.style) {
+        console.error('domRef is not dom element', domRef)
+      }
       Object.entries(computedAnimationProps).forEach(([key, value]) => domRef.style[key] = value)
     }
   }
