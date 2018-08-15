@@ -1,8 +1,8 @@
 
 .complex-component {
   box-sizing: border-box;
-  width: 48px;
-  height: 48px;
+  width: 72px;
+  height: 72px;
   margin: 8px;
   padding: 4px;
   border-radius: 25%;
@@ -10,6 +10,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-size: 10px;
   cursor: pointer;
 }
 
@@ -24,7 +25,6 @@
 
 .complex-component > p {
   margin: 2px auto 2px;
-  font-size: 8px;
   animation: animate-text-rotation infinite 3s linear;
 }
 

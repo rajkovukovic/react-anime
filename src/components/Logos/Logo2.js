@@ -10,7 +10,7 @@ const Logo2 = () => (
     viewBox="0 0 24 24"
     xmlSpace="preserve"
   >
-    <polygon fill="currentColor" points="12,2.65 1.2,21.35 22.8,21.35 "/>
+    <polygon fill="currentColor" points="12,0.64 2.17,17.66 21.83,17.66" />
   </svg>
 )
 

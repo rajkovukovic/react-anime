@@ -4,3 +4,12 @@ body {
   font-family: sans-serif;
   background: silver;
 }
+
+#fps {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+}

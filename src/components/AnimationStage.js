@@ -11,16 +11,16 @@ const defaultPhysics = JSON.stringify({
       velocity: 0,
       maxVelocity: 2,
       maxAcc: 0.05,
-      min: -200,
-      max: 200,
+      min: -20,
+      max: 20,
     },
     y: {
       value: 0,
       velocity: 0,
       maxVelocity: 2,
       maxAcc: 0.05,
-      min: -200,
-      max: 200,
+      min: -20,
+      max: 20,
     },
     opacity: {
       value: 1,
@@ -34,7 +34,7 @@ const defaultPhysics = JSON.stringify({
       value: 1,
       velocity: 0,
       maxVelocity: 0.05,
-      maxAcc: 0.005,
+      maxAcc: 0.001,
       min: 0.5,
       max: 1.5,
     },
@@ -93,6 +93,8 @@ class AnimationStage extends React.PureComponent {
     componentsProps: [],
   }
 
+  tickQueue = []
+
   minFrameDuration = 1
 
   componentDidMount() {
@@ -108,7 +110,7 @@ class AnimationStage extends React.PureComponent {
       return {
         componentCount: nextProps.componentCount,
         componentsProps: [
-          ...prevState.componentsProps.splice(nextProps.componentCount),
+          ...prevState.componentsProps.slice(0, nextProps.componentCount),
           ...generateAnimatedComponentPropsArray(nextProps.componentCount - prevState.componentCount)
         ]
       }
@@ -117,20 +119,39 @@ class AnimationStage extends React.PureComponent {
   }
 
   tick = () => {
-    const { lastTickTime, minFrameDuration } = this
+    const { lastTickTime, minFrameDuration, tickQueue } = this
     const { animating } = this.props
     const { componentsProps } = this.state
-    if (animating && (!lastTickTime || Date.now() - lastTickTime > minFrameDuration)) {
-      this.lastTickTime = Date.now()
+    const now = Date.now()
+    if (animating && (!lastTickTime || now - lastTickTime > minFrameDuration)) {
+      this.lastTickTime = now
       componentsProps.forEach(compProps => {
         Object.values(compProps.animatedProps).forEach(prop => tickPhysics(prop))
       })
+      if (!this.firstTickTimestamp) {
+        this.firstTickTimestamp = now
+      }
+      tickQueue.push(now)
+      const fpsSampleDuration = 200
+      const fpsUpdateInterval = 500
+      const freshTicks = this.tickQueue = tickQueue.filter(tick => now - tick < fpsSampleDuration)
+      if (freshTicks.length > 1) {
+        const newFps = Math.round( 1000 * (freshTicks.length - 1) / (freshTicks[freshTicks.length - 1] - freshTicks[0]) )
+        if (!this.lastFpsTimestamp || now - this.lastFpsTimestamp >= fpsUpdateInterval) {
+          if (newFps !== this.lastFps) {
+            window.fpsRef.innerHTML = newFps + ' fps'
+          }
+          this.lastFps = newFps
+          this.lastFpsTimestamp = now
+        }
+      }
       this.forceUpdate()
     }
     window.requestAnimationFrame(this.tick)
   }
 
   render() {
+    // console.log('AnimationStage.render')
     return (
       <div className='animation-stage'>
         {this.state.componentsProps.map((compProps, index) => {

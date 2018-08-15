@@ -12,7 +12,6 @@ class AnimatedComponent extends React.Component {
   }
 
   onPropsChange = (nextProps) => {
-    console.log(`AnimatedComponent.onPropsChange, nextProps: `, nextProps, '\n\n')
     if (nextProps.children) {
       throw Error('AnimatedComponent can not have children because of performance issues. Use props childComponent and childProps to achieve render caching.')
     }
@@ -47,7 +46,7 @@ class AnimatedComponent extends React.Component {
   }
 
   onRefUpdate = (domRef) => {
-    console.log('ref changed: ', domRef)
+    // console.log('ref changed: ', domRef)
     const { childProps } = this.props
     this.domRef = domRef
     if (domRef) {
