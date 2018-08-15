@@ -8,7 +8,6 @@ const Logo3 = () => (
     x="0px"
     y="0px"
     viewBox="0 0 24 24"
-    style="enable-background:new 0 0 24 24;"
     xmlSpace="preserve"
   >
     <rect x="3" y="3" fill="currentColor" width="18" height="18"/>

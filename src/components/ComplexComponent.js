@@ -19,18 +19,15 @@ const LOGOS = [
   Logo6,
 ]
 
-class ComplexComponent extends React.Component {
-  render () {
-    const { iconIndex, backgroundColor, color, label } = this.props
-    const Icon = LOGOS[iconIndex]
-    return (
-      <div className='complex-component' style={{ backgroundColor, color }} >
-        <p>{label}</p>
-        {/* <Logo /> */}
-        <Logo1 />
-      </div>
-    )
-  }
-}
+const ComplexComponent = React.forwardRef((props, ref) => {
+  const { iconIndex, backgroundColor, color, label } = props
+  const Logo = LOGOS[iconIndex]
+  return (
+    <span className='complex-component' style={{ backgroundColor, color }} ref={ref}>
+      <Logo />
+      <p>{label}</p>
+    </span>
+  )
+})
 
 export default ComplexComponent

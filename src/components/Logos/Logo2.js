@@ -8,7 +8,6 @@ const Logo2 = () => (
     x="0px"
     y="0px"
     viewBox="0 0 24 24"
-    style="enable-background:new 0 0 24 24;"
     xmlSpace="preserve"
   >
     <polygon fill="currentColor" points="12,2.65 1.2,21.35 22.8,21.35 "/>
