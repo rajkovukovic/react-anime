@@ -198,10 +198,11 @@ class AnimationStage extends React.PureComponent {
         y="0px"
         width={`${width}px`}
         height={`${height}px`}
-        viewBox={`0 0 ${width} ${height}`}
+        viewBox={`${-width/2 | 0} ${-height/2 | 0} ${width} ${height}`}
         xmlSpace="preserve"
       >
-        <g transform={`translate(${width / 2} ${height / 2})`}>
+        {/* <g transform={`translate(${width / 2} ${height / 2})`}> */}
+        <g>
           {optimized
             ? (
               this.state.componentsProps.map((compProps, index) => {
@@ -214,15 +215,15 @@ class AnimationStage extends React.PureComponent {
                     childComponent={ComplexComponent}
                     animationProps={{
                       opacity,
-                      transform: `scale(${scale.value}) translate(${x.value}, ${y.value}) rotate(${rotate.value}deg)`,
+                      transform: `scale(${scale.value}) translate(${x.value}, ${y.value}) rotate(${rotate.value})`,
                     }}
                   />
                 )
               }))
             : (
               this.state.componentsProps.map((compProps, index) => {
-                const { animatedProps, ...childProps } = compProps
-                const { x, y, rotate, scale, opacity } = animatedProps
+                // const { animatedProps, ...childProps } = compProps
+                // const { x, y, rotate, scale, opacity } = animatedProps
                 return (
                   // <ComplexComponent
                   //   key={index}

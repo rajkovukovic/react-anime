@@ -5,7 +5,7 @@ import { AnimationStage } from './components'
 
 class App extends React.Component {
   state = {
-    componentCount: 2,
+    componentCount: 1,
     animating: false,
     optimized: true,
   }

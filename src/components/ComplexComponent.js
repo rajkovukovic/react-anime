@@ -28,8 +28,8 @@ const ComplexComponent = React.forwardRef((props, ref) => {
   return (
     <g className='complex-component' {...restProps} ref={ref}>
       <circle cx={0} cy={0} r={radius} fill={backgroundColor}/>
-      <Logo fill={color} transform={`translate(${ - iconSize / 2 } ${ -10 })`}/>
-      <text textAnchor='middle' x={0} y={10} fill={color} fontSize={radius / 3}>
+      <Logo fill={color} transform={`translate(${ - iconSize / 2 } ${ -radius * .8 })`}/>
+      <text textAnchor='middle' x={0} y={ radius * .6 } fill={color} fontSize={radius / 3}>
         {label}
       </text>
     </g>
