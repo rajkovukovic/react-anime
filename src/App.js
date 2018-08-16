@@ -5,8 +5,8 @@ import { AnimationStage } from './components'
 
 class App extends React.Component {
   state = {
-    componentCount: 100,
-    animating: true,
+    componentCount: 2,
+    animating: false,
     optimized: true,
   }
 

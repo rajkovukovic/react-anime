@@ -186,43 +186,58 @@ class AnimationStage extends React.PureComponent {
   render() {
     console.log('AnimationStage.render')
     const { optimized } = this.props
+    const width = 800
+    const height = 600
     return (
-      optimized
-        ? (
-          <div className='animation-stage'>
-            {this.state.componentsProps.map((compProps, index) => {
-              const { animatedProps, ...childProps } = compProps
-              const { x, y, rotate, scale, opacity } = animatedProps
-              return (
-                <AnimatedComponent
-                  key={index}
-                  childProps={childProps}
-                  childComponent={ComplexComponent}
-                  animationProps={{
-                    opacity,
-                    transform: `scale(${scale.value}) translate(${x.value}px, ${y.value}px) rotate(${rotate.value}deg)`,
-                  }}
-                />
-              )
-            })}
-          </div>)
-        : (
-          <div className='animation-stage'>
-            {this.state.componentsProps.map((compProps, index) => {
-              const { animatedProps, ...childProps } = compProps
-              const { x, y, rotate, scale, opacity } = animatedProps
-              return (
-                <ComplexComponent
-                  key={index}
-                  style={{
-                    opacity,
-                    transform: `scale(${scale.value}) translate(${x.value}px, ${y.value}px) rotate(${rotate.value}deg)`,
-                  }}
-                  {...childProps}
-                />
-              )
-            })}
-          </div>)
+      <svg
+        className='animation-stage'
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        x="0px"
+        y="0px"
+        width={`${width}px`}
+        height={`${height}px`}
+        viewBox={`0 0 ${width} ${height}`}
+        xmlSpace="preserve"
+      >
+        <g transform={`translate(${width / 2} ${height / 2})`}>
+          {optimized
+            ? (
+              this.state.componentsProps.map((compProps, index) => {
+                const { animatedProps, ...childProps } = compProps
+                const { x, y, rotate, scale, opacity } = animatedProps
+                return (
+                  <AnimatedComponent
+                    key={index}
+                    childProps={childProps}
+                    childComponent={ComplexComponent}
+                    animationProps={{
+                      opacity,
+                      transform: `scale(${scale.value}) translate(${x.value}, ${y.value}) rotate(${rotate.value}deg)`,
+                    }}
+                  />
+                )
+              }))
+            : (
+              this.state.componentsProps.map((compProps, index) => {
+                const { animatedProps, ...childProps } = compProps
+                const { x, y, rotate, scale, opacity } = animatedProps
+                return (
+                  // <ComplexComponent
+                  //   key={index}
+                  //   style={{
+                  //     opacity,
+                  //     transform: `scale(${scale.value}) translate(${x.value}px, ${y.value}px) rotate(${rotate.value}deg)`,
+                  //   }}
+                  //   {...childProps}
+                  // />
+                  null
+                )
+              }))
+          }
+        </g>
+      </svg>
     )
   }
 }

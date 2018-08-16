@@ -19,14 +19,20 @@ const LOGOS = [
   Logo6,
 ]
 
+const radius = 24
+const iconSize = 24
+
 const ComplexComponent = React.forwardRef((props, ref) => {
-  const { iconIndex, backgroundColor, color, label, style = {}, ...restProps } = props
+  const { iconIndex, backgroundColor, color, label, ...restProps } = props
   const Logo = LOGOS[iconIndex]
   return (
-    <span className='complex-component' {...restProps} style={{ ...style, backgroundColor, color }} ref={ref}>
-      <Logo />
-      <p>{label}</p>
-    </span>
+    <g className='complex-component' {...restProps} ref={ref}>
+      <circle cx={0} cy={0} r={radius} fill={backgroundColor}/>
+      <Logo fill={color} transform={`translate(${ - iconSize / 2 } ${ -10 })`}/>
+      <text textAnchor='middle' x={0} y={10} fill={color} fontSize={radius / 3}>
+        {label}
+      </text>
+    </g>
   )
 })
 
