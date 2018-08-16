@@ -1,12 +1,16 @@
 
+const average = array => array.reduce( ( acc, cur ) => acc + cur, 0 ) / array.length
+
 const randomRange = (min, max) => Math.random() * (max - min) + min
 
-const tickPhysics = n => {
-  n.velocity += randomRange(-n.maxAcc, n.maxAcc)
-  if (n.maxVelocity && Math.abs(n.velocity) > n.maxVelocity) {
+const tickPhysics = (n, multiplier = 1) => {
+  const maxAcc = n.maxAcc * multiplier
+  const maxVelocity = n.maxVelocity * multiplier
+  n.velocity += randomRange(-maxAcc, maxAcc)
+  if (maxVelocity && Math.abs(n.velocity) > maxVelocity) {
     n.velocity = Math.sign(n.velocity) > 0
-      ? + n.maxVelocity
-      : - n.maxVelocity
+      ? + maxVelocity
+      : - maxVelocity
   }
   n.value += n.velocity
   if (n.hasOwnProperty('min') && n.value < n.min) {
@@ -25,6 +29,7 @@ const tickPhysics = n => {
 }
 
 export {
+  average,
   randomRange,
   tickPhysics,
 }

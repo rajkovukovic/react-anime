@@ -20,10 +20,10 @@ const LOGOS = [
 ]
 
 const ComplexComponent = React.forwardRef((props, ref) => {
-  const { iconIndex, backgroundColor, color, label } = props
+  const { iconIndex, backgroundColor, color, label, style = {}, ...restProps } = props
   const Logo = LOGOS[iconIndex]
   return (
-    <span className='complex-component' style={{ backgroundColor, color }} ref={ref}>
+    <span className='complex-component' {...restProps} style={{ ...style, backgroundColor, color }} ref={ref}>
       <Logo />
       <p>{label}</p>
     </span>

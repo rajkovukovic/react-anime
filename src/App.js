@@ -7,6 +7,7 @@ class App extends React.Component {
   state = {
     componentCount: 100,
     animating: true,
+    optimized: true,
   }
 
   trySetComponentCount = newValue => {
@@ -42,15 +43,23 @@ class App extends React.Component {
     this.setState({ animating: !this.state.animating })
   }
 
+  toggleOptimization = () => {
+    this.setState({ optimized: !this.state.optimized })
+  }
+
   render() {
-    const { componentCount, animating } = this.state
+    const { componentCount, animating, optimized } = this.state
     console.log('App.render')
     return (
       <div className="App">
         <header className="App-header">
+          <label htmlFor='input-optimizing'>
+            <input id='input-optimizing' type='checkbox' onChange={this.toggleOptimization} checked={optimized} />
+            {' Optimize '}
+          </label>
           <label htmlFor='input-animating'>
             <input id='input-animating' type='checkbox' onChange={this.toggleAnimation} checked={animating} />
-            {' Animate'}
+            {' Animating '}
           </label>
           <label htmlFor='input-component-count'>
             <input
@@ -65,7 +74,7 @@ class App extends React.Component {
             {' Components'}
           </label>
         </header>
-        <AnimationStage componentCount={componentCount} animating={animating} />
+        <AnimationStage componentCount={componentCount} animating={animating} optimized={optimized} />
       </div>
     )
   }

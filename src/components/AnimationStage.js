@@ -9,40 +9,40 @@ const defaultPhysics = JSON.stringify({
     x: {
       value: 0,
       velocity: 0,
-      maxVelocity: 2,
-      maxAcc: 0.05,
-      min: -20,
-      max: 20,
+      maxVelocity: 200,
+      maxAcc: 3,
+      min: -100,
+      max: 100,
     },
     y: {
       value: 0,
       velocity: 0,
-      maxVelocity: 2,
-      maxAcc: 0.05,
-      min: -20,
-      max: 20,
-    },
-    opacity: {
-      value: 1,
-      velocity: 0,
-      maxVelocity: 0.05,
-      maxAcc: 0.005,
-      min: 0.1,
-      max: 1,
+      maxVelocity: 200,
+      maxAcc: 3,
+      min: -100,
+      max: 100,
     },
     scale: {
       value: 1,
       velocity: 0,
-      maxVelocity: 0.05,
-      maxAcc: 0.001,
-      min: 0.5,
-      max: 1.5,
+      maxVelocity: 0.5,
+      maxAcc: 0.1,
+      min: 0.7,
+      max: 1.41,
     },
     rotate: {
       value: 0,
       velocity: 0,
-      maxVelocity: 6,
-      maxAcc: 0.3,
+      maxVelocity: 10,
+      maxAcc: 1,
+    },
+    opacity: {
+      value: 1,
+      velocity: 0,
+      maxVelocity: 1,
+      maxAcc: 0.2,
+      min: 0.1,
+      max: 1,
     },
   },
 })
@@ -69,7 +69,7 @@ const LABELS = [
 const generateAnimatedComponentProps = () => ({
   ...(JSON.parse(defaultPhysics)),
   iconIndex: Math.floor(Math.random() * 6),
-  backgroundColor: `rgba(0, 0, 0, ${ randomRange(0.4, 0.8) })`,
+  backgroundColor: `rgba(0, 0, 0, ${randomRange(0.4, 0.8)})`,
   color: COLORS[Math.floor(Math.random() * COLORS.length)],
   label: LABELS[Math.floor(Math.random() * LABELS.length)],
 })
@@ -89,16 +89,17 @@ const generateAnimatedComponentPropsArray = (count) => {
 class AnimationStage extends React.PureComponent {
 
   state = {
+    animating: false,
     componentCount: 0,
     componentsProps: [],
   }
 
   tickQueue = []
 
-  minFrameDuration = 1
+  minFrameDuration = 1000 / 30
 
   componentDidMount() {
-    this.rafHandle = window.requestAnimationFrame(this.tick)
+    this.raf()
   }
 
   componentWillUnmount() {
@@ -106,8 +107,12 @@ class AnimationStage extends React.PureComponent {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.animating && !nextProps.animating) {
+      window.fpsRef.innerHTML = 'paused'
+    }
     if (prevState.componentCount !== nextProps.componentCount) {
       return {
+        animating: nextProps.animating,
         componentCount: nextProps.componentCount,
         componentsProps: [
           ...prevState.componentsProps.slice(0, nextProps.componentCount),
@@ -118,58 +123,106 @@ class AnimationStage extends React.PureComponent {
     return null
   }
 
+  raf = () => {
+    this.rafHandle = window.requestAnimationFrame(this.tick)
+  }
+
   tick = () => {
-    const { lastTickTime, minFrameDuration, tickQueue } = this
+    this.rafHandle = 0
+    const { lastTickTime, minFrameDuration } = this
     const { animating } = this.props
     const { componentsProps } = this.state
-    const now = Date.now()
+    const now = +Date.now()
     if (animating && (!lastTickTime || now - lastTickTime > minFrameDuration)) {
+      const timeDelta = (now - lastTickTime) / 1000 || 1 / 60
+      console.log(timeDelta)
       this.lastTickTime = now
       componentsProps.forEach(compProps => {
-        Object.values(compProps.animatedProps).forEach(prop => tickPhysics(prop))
+        Object.values(compProps.animatedProps).forEach(prop => tickPhysics(prop, timeDelta))
       })
       if (!this.firstTickTimestamp) {
         this.firstTickTimestamp = now
       }
-      tickQueue.push(now)
-      const fpsSampleDuration = 200
-      const fpsUpdateInterval = 500
-      const freshTicks = this.tickQueue = tickQueue.filter(tick => now - tick < fpsSampleDuration)
-      if (freshTicks.length > 1) {
-        const newFps = Math.round( 1000 * (freshTicks.length - 1) / (freshTicks[freshTicks.length - 1] - freshTicks[0]) )
-        if (!this.lastFpsTimestamp || now - this.lastFpsTimestamp >= fpsUpdateInterval) {
-          if (newFps !== this.lastFps) {
-            window.fpsRef.innerHTML = newFps + ' fps'
-          }
-          this.lastFps = newFps
-          this.lastFpsTimestamp = now
-        }
-      }
-      this.forceUpdate()
+      console.log('AnimationStage.forceUpdate');
+      this.forceUpdate(() => {
+        console.log('AnimationStage.forceUpdate completed')
+        this.measureFps()
+        this.raf()
+      })
     }
-    window.requestAnimationFrame(this.tick)
+    else {
+      this.raf()
+    }
+  }
+
+  measureFps() {
+    const { tickQueue } = this
+    const now = +Date.now()
+    tickQueue.push(now)
+    const fpsSampleDuration = 2000
+    const fpsUpdateInterval = 500
+    const freshTicks = this.tickQueue = tickQueue.filter(tick => now - tick < fpsSampleDuration)
+    if (freshTicks.length > 1) {
+      const newFps = Math.round(1000 * (freshTicks.length - 1) / (freshTicks[freshTicks.length - 1] - freshTicks[0]))
+      if (!this.lastFpsTimestamp || now - this.lastFpsTimestamp >= fpsUpdateInterval) {
+        const durations = freshTicks
+          .map((tick, index) => index ? tick - freshTicks[index - 1] : 0)
+          .slice(1)
+        const minFps = Math.round(1000 / Math.max(...durations))
+        const message = `min: ${minFps} fps - avg: ${newFps} fps`
+        //  - durations(${durations.length}): ${durations.join()}
+        window.fpsRef.innerHTML = message
+        this.lastFps = newFps
+        this.lastFpsTimestamp = now
+      }
+
+    }
+  }
+
+  componentDidUpdate() {
+    console.log('AnimationStage.componentDidUpdate')
   }
 
   render() {
-    // console.log('AnimationStage.render')
+    console.log('AnimationStage.render')
+    const { optimized } = this.props
     return (
-      <div className='animation-stage'>
-        {this.state.componentsProps.map((compProps, index) => {
-          const { animatedProps, ...childProps } = compProps
-          const { x, y, rotate, scale, opacity } = animatedProps
-          return (
-            <AnimatedComponent
-              key={index}
-              childProps={childProps}
-              childComponent={ComplexComponent}
-              animationProps={{
-                opacity,
-                transform: `scale(${scale.value}) translate(${x.value}px, ${y.value}px) rotate(${rotate.value}deg)`,
-              }}
-            />
-          )
-        })}
-      </div>
+      optimized
+        ? (
+          <div className='animation-stage'>
+            {this.state.componentsProps.map((compProps, index) => {
+              const { animatedProps, ...childProps } = compProps
+              const { x, y, rotate, scale, opacity } = animatedProps
+              return (
+                <AnimatedComponent
+                  key={index}
+                  childProps={childProps}
+                  childComponent={ComplexComponent}
+                  animationProps={{
+                    opacity,
+                    transform: `scale(${scale.value}) translate(${x.value}px, ${y.value}px) rotate(${rotate.value}deg)`,
+                  }}
+                />
+              )
+            })}
+          </div>)
+        : (
+          <div className='animation-stage'>
+            {this.state.componentsProps.map((compProps, index) => {
+              const { animatedProps, ...childProps } = compProps
+              const { x, y, rotate, scale, opacity } = animatedProps
+              return (
+                <ComplexComponent
+                  key={index}
+                  style={{
+                    opacity,
+                    transform: `scale(${scale.value}) translate(${x.value}px, ${y.value}px) rotate(${rotate.value}deg)`,
+                  }}
+                  {...childProps}
+                />
+              )
+            })}
+          </div>)
     )
   }
 }
