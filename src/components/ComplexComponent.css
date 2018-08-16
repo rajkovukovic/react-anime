@@ -19,13 +19,8 @@
   transform-origin: 50% 50%;
 }
 
-.complex-component > svg {
+.svg-logo {
   animation: animate-logo-rotation infinite 3s linear;
-}
-
-.complex-component > p {
-  margin: 2px auto 2px;
-  animation: animate-text-rotation infinite 3s linear;
 }
 
 @keyframes animate-text-rotation {
@@ -37,4 +32,22 @@
 @keyframes animate-logo-rotation {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.anmated-circle-stroke {
+
+}
+
+.anmated-circle-progress {
+  stroke-dasharray: 200;
+  animation: dash 3s linear alternate infinite;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 70;
+  }
+  to {
+    stroke-dashoffset: 180;
+  }
 }

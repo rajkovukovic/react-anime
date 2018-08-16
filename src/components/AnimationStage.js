@@ -4,6 +4,7 @@ import { AnimatedComponent, ComplexComponent } from './index'
 
 import { randomRange, tickPhysics } from '../utils/helpers'
 
+const scaleFactor = 3
 const defaultPhysics = JSON.stringify({
   animatedProps: {
     x: {
@@ -23,12 +24,12 @@ const defaultPhysics = JSON.stringify({
       max: 100,
     },
     scale: {
-      value: 1,
+      value: 1 * scaleFactor,
       velocity: 0,
       maxVelocity: 0.5,
       maxAcc: 0.1,
-      min: 0.7,
-      max: 1.41,
+      min: 0.7 * scaleFactor,
+      max: 1.41 * scaleFactor,
     },
     rotate: {
       value: 0,
@@ -186,8 +187,8 @@ class AnimationStage extends React.PureComponent {
   render() {
     console.log('AnimationStage.render')
     const { optimized } = this.props
-    const width = 800
-    const height = 600
+    const width = 1200
+    const height = 1200
     return (
       <svg
         className='animation-stage'
@@ -215,7 +216,7 @@ class AnimationStage extends React.PureComponent {
                     childComponent={ComplexComponent}
                     animationProps={{
                       opacity,
-                      transform: `scale(${scale.value}) translate(${x.value}, ${y.value}) rotate(${rotate.value})`,
+                      transform: `scale(${scale.value}) translate3d(${x.value}px, ${y.value}px, 0) rotate(${rotate.value}deg)`,
                     }}
                   />
                 )
