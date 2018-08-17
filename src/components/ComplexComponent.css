@@ -19,7 +19,11 @@
   transform-origin: 50% 50%;
 }
 
-.svg-logo {
+.node-spin {
+  animation: animate-text-rotation infinite 3s linear;
+}
+
+.node-logo {
   animation: animate-logo-rotation infinite 3s linear;
 }
 
@@ -34,11 +38,11 @@
   to { transform: rotate(360deg); }
 }
 
-.anmated-circle-stroke {
+.animated-circle-stroke {
 
 }
 
-.anmated-circle-progress {
+.animated-circle-progress {
   stroke-dasharray: 200;
   animation: dash 3s linear alternate infinite;
 }

@@ -19,22 +19,24 @@ const LOGOS = [
   Logo6,
 ]
 
-const radius = 24
+const nodeRadius = 24
 const iconSize = 24
 const strokeWidth = 2
 const iconX = - iconSize / 2
-const iconY = - radius * .7
+const iconY = - nodeRadius * .7
 
 const ComplexComponent = React.forwardRef((props, ref) => {
-  const { iconIndex, backgroundColor, color, label, ...restProps } = props
+  const { iconIndex, backgroundColor, color, label, index, ...restProps } = props
   const Logo = LOGOS[iconIndex]
   return (
     <g className='complex-component' {...restProps} ref={ref}>
-      <circle className='anmated-circle-stroke'cx={0} cy={0} r={radius - strokeWidth} strokeWidth={strokeWidth} fill={'none'} stroke={backgroundColor} />
-      <circle className='anmated-circle-progress' cx={0} cy={0} r={radius - strokeWidth} strokeWidth={strokeWidth} fill={'none'} stroke={color} />
-      <circle cx={0} cy={0} r={radius * .8} fill={backgroundColor}/>
+      <g className='node-spin'>
+        <circle className='animated-circle-stroke'cx={0} cy={0} r={nodeRadius - strokeWidth} strokeWidth={strokeWidth} fill={'none'} stroke={backgroundColor} />
+        <circle className='animated-circle-progress' cx={0} cy={0} r={nodeRadius - strokeWidth} strokeWidth={strokeWidth} fill={'none'} stroke={color} />
+      </g>
+      <circle cx={0} cy={0} r={nodeRadius * .8} fill={backgroundColor}/>
       <g
-        className='svg-logo'
+        className='node-logo'
         style={{
           transformOrigin: `${ iconSize / 2 + iconX }px ${ iconSize / 2 + iconY }px`,
         }}
@@ -47,8 +49,8 @@ const ComplexComponent = React.forwardRef((props, ref) => {
           }}
         />
       </g>
-      <text textAnchor='middle' x={0} y={ radius * .6 } fill={color} fontSize={radius / 4}>
-        {label}
+      <text textAnchor='middle' x={0} y={ nodeRadius * .6 } fill={color} fontSize={nodeRadius / 4}>
+        {`${index} - ${label}`}
       </text>
     </g>
   )

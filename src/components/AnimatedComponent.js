@@ -1,5 +1,5 @@
 import * as React from 'react'
-import shallowEqualObjects from 'shallow-equal/objects'
+import shallowEqual from 'shallowequal'
 
 class AnimatedComponent extends React.Component {
   constructor(props) {
@@ -17,17 +17,15 @@ class AnimatedComponent extends React.Component {
     }
     const { childComponent: ChildComponent, childProps = {}, animationProps } = nextProps
     let componentShouldUpdate = false
-    // if childComponent or ichildProps has changed rerender and cache result
-    if (!this.lastChildComponent || this.lastChildComponent !== ChildComponent || !shallowEqualObjects(this.lastChildProps, childProps)) {
+    // if childComponent or childProps has changed rerender and cache result
+    if (!this.lastChildComponent || this.lastChildComponent !== ChildComponent || !shallowEqual(this.lastChildProps, childProps)) {
       this.lastChildComponent = ChildComponent
       this.lastChildProps = childProps
-      this.lastRenderResult = <ChildComponent {...childProps} ref={this.onRefUpdate} />
+      this.lastRenderResult = 
       componentShouldUpdate = true
     }
     // if animation related data (animationProps prop) has changed recalc it
-    if (!this.lastAnimationProps || !shallowEqualObjects(this.lastAnimationProps, animationProps)) {
-      this.lastAnimationProps = animationProps
-      this.computedAnimationProps = animationProps
+    if (!shallowEqual(this.props.animationProps, animationProps)) {
       if (!componentShouldUpdate) {
         this.applyAnimationPropsToDomRef()
       }
@@ -36,13 +34,14 @@ class AnimatedComponent extends React.Component {
   }
 
   applyAnimationPropsToDomRef = () => {
-    const { computedAnimationProps, domRef } = this
+    const { domRef } = this
+    const { animationProps } = this.props
     if (domRef) {
       if (!domRef.style) {
         console.error('domRef is not dom element', domRef)
       }
-      // Object.entries(computedAnimationProps).forEach( ([ key, value ]) => domRef.setAttribute(key, value) )
-      Object.entries(computedAnimationProps).forEach( ([ key, value ]) => domRef.style[key] = value )
+      // Object.entries(animationProps).forEach( ([ key, value ]) => domRef.setAttribute(key, value) )
+      Object.entries(animationProps).forEach( ([ key, value ]) => domRef.style[key] = value )
     }
   }
 
@@ -59,7 +58,9 @@ class AnimatedComponent extends React.Component {
   }
 
   render() {
-    return this.lastRenderResult
+    console.log('AnimatedComponent.render')
+    const { childComponent: ChildComponent, childProps } = this.props
+    return <ChildComponent {...childProps} ref={this.onRefUpdate} />
   }
 }
 

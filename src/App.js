@@ -5,7 +5,7 @@ import { AnimationStage } from './components'
 
 class App extends React.Component {
   state = {
-    componentCount: 20,
+    componentCount: 1,
     animating: true,
     optimized: true,
   }
@@ -19,32 +19,16 @@ class App extends React.Component {
     }
   }
 
-  // onComponentCountFocus = (event) => {
-  //   this.inputComponentCountFocused = true
-  //   this.trySetComponentCount(event.target.value)
-  // }
-
-  // onComponentCountBlur = (event) => {
-  //   this.inputComponentCountFocused = false
-  //   this.trySetComponentCount(event.target.value)
-  // }
-
-  // onComponentCountKeyDown = (event) => {
-  //   if (event.keyCode === 13) {
-  //     this.trySetComponentCount(event.target.value)
-  //   }
-  // }
-
   onComponentCountChange = (event) => {
     this.trySetComponentCount(event.target.value)
   }
 
   toggleAnimation = () => {
-    this.setState({ animating: !this.state.animating })
+    this.setState( prevState => ({ animating: !prevState.animating }))
   }
 
   toggleOptimization = () => {
-    this.setState({ optimized: !this.state.optimized })
+    this.setState( prevState => ({ optimized: !prevState.optimized }))
   }
 
   render() {
@@ -74,7 +58,8 @@ class App extends React.Component {
             {' Components'}
           </label>
         </header>
-        <AnimationStage componentCount={componentCount} animating={animating} optimized={optimized} />
+
+        <AnimationStage {...this.state} />
       </div>
     )
   }
