@@ -26,12 +26,12 @@ const iconX = - iconSize / 2
 const iconY = - nodeRadius * .7
 
 const ComplexComponent = React.forwardRef((props, ref) => {
-  const { iconIndex, backgroundColor, color, label, index, ...restProps } = props
+  const { iconIndex, backgroundColor, color, label, index, clickHandle, ...restProps } = props
   const Logo = LOGOS[iconIndex]
   return (
-    <g className='complex-component' {...restProps} ref={ref}>
+    <g className='complex-component' {...restProps} ref={ref} onClick={ () => clickHandle(index) } >
       <g className='node-spin'>
-        <circle className='animated-circle-stroke'cx={0} cy={0} r={nodeRadius - strokeWidth} strokeWidth={strokeWidth} fill={'none'} stroke={backgroundColor} />
+        <circle className='animated-circle-stroke' cx={0} cy={0} r={nodeRadius - strokeWidth} strokeWidth={strokeWidth} fill={'none'} stroke={backgroundColor} />
         <circle className='animated-circle-progress' cx={0} cy={0} r={nodeRadius - strokeWidth} strokeWidth={strokeWidth} fill={'none'} stroke={color} />
       </g>
       <circle cx={0} cy={0} r={nodeRadius * .8} fill={backgroundColor}/>

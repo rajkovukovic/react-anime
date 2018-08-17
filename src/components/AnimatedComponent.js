@@ -58,8 +58,8 @@ class AnimatedComponent extends React.Component {
   }
 
   render() {
-    console.log('AnimatedComponent.render')
     const { childComponent: ChildComponent, childProps } = this.props
+    console.log('AnimatedComponent.render')
     return <ChildComponent {...childProps} ref={this.onRefUpdate} />
   }
 }

@@ -1,15 +1,20 @@
 
 import { limitToRange, randomRange } from './helpers';
 
-const scaleFactor = 3;
+const Deg90 = Math.PI / 4
+const Deg180 = Math.PI / 2
+
+const scaleFactor = 1
 const defaultPhysics = JSON.stringify ({
   animatedProps: {
     position: {
-      distance: {
-        value: 20,
-        velocity: 0.3,
-        minVelocity: 0.2,
-        maxVelocity: 0.5,
+      speed: {
+        value: 0.5,
+        min: 0,
+        max: 1,
+        velocity: 0.1,
+        minVelocity: 0,
+        maxVelocity: 1,
         maxAcc: 0.1,
       },
       angle: {
@@ -19,9 +24,9 @@ const defaultPhysics = JSON.stringify ({
         maxAcc: 0.01,
       },
       depth: {
-        value: 0,
+        value: -200,
         velocity: 0,
-        maxVelocity: 0.2,
+        maxVelocity: 0.1,
         maxAcc: 0.01,
         min: -300,
         max: 0
@@ -60,27 +65,34 @@ const tickPhysicsProperty = (n, {multiplier = 1, range = {}}) => {
   const maxAcc = n.maxAcc * multiplier;
   const minVelocity = n.minVelocity * multiplier
   const maxVelocity = n.maxVelocity * multiplier
-  n.velocity += randomRange (-maxAcc, maxAcc)
-  n.velocity = Math.sign (n.velocity) * limitToRange(Math.abs(n.velocity), minVelocity, maxVelocity)
+  if (maxAcc) {
+    n.velocity += randomRange (-maxAcc, maxAcc)
+    n.velocity = Math.sign (n.velocity) * limitToRange(Math.abs(n.velocity), minVelocity, maxVelocity)
+  }
+  else {
+    n.velocity = randomRange(n.minVelocity, n.maxVelocity)
+  }
   n.value += n.velocity
-  if (typeof min === 'number' && n.value < n.min) {
-    n.value = n.min;
-  }
-  if (typeof max === 'number' && n.value > n.max) {
-    n.value = n.max;
-  }
+  n.value = Math.sign (n.value) * limitToRange(Math.abs(n.value), min, max)
   return n;
 };
 
 const tickPosition = (position, options) => {
-  tickPhysicsProperty(position.distance, options)
+  tickPhysicsProperty(position.speed, options)
   tickPhysicsProperty(position.angle, options)
   tickPhysicsProperty(position.depth, options)
-  const distance = position.distance.value
-  const angle = position.angle.value
-  position.x = distance * Math.cos(angle)
-  position.y = distance * Math.sin(angle)
+  const speed = position.speed.value
+  const angle = position.angle
+  const { xMin, xMax, yMin, yMax } = options
+  position.x += speed * Math.cos(angle.value)
+  position.y += speed * Math.sin(angle.value)
   position.z = position.depth.value
+  if (position.x < xMin || position.x > xMax) {
+    angle.value += Deg90
+  }
+  if (position.y < yMin || position.y > yMax) {
+    angle.value = Deg180 - angle.value
+  }
 }
 
 const tickPhysics = (props, options) => {

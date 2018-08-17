@@ -81,10 +81,10 @@ class AnimationContent extends React.Component {
       this.lastTickTime = now;
       tickPhysics (componentsProps, {
         timeDelta,
-        minX: -width / 2,
-        maxX: +width / 2,
-        minY: -height / 2,
-        maxY: +height / 2,
+        xMin: -width / 2,
+        xMax: +width / 2,
+        yMin: -height / 2,
+        yMax: +height / 2,
       });
       if (!this.firstTickTimestamp) {
         this.firstTickTimestamp = now;
@@ -97,8 +97,12 @@ class AnimationContent extends React.Component {
     }
   }
 
+  onChildClick = (index) => {
+    console.log( this.state.componentsProps[index].animatedProps )
+  }
+
   render () {
-    console.log ('AnimatedContent.render');
+    // console.log ('Content.render');
     // const { optimized } = this.props
     const {componentsProps} = this.state;
     return (
@@ -110,7 +114,7 @@ class AnimationContent extends React.Component {
         return (
           <AnimatedComponent
             key={index}
-            childProps={childProps}
+            childProps={{...childProps, clickHandle: this.onChildClick }}
             childComponent={ComplexComponent}
             animationProps={{
               opacity,

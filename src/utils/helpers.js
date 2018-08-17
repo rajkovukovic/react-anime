@@ -1,11 +1,14 @@
 const average = array =>
   array.reduce ((acc, cur) => acc + cur, 0) / array.length;
 
-const limitToRange = (value, min, max) => {
-  Math.min(Math.max(value, max), min)
-}
+const limitToRange = (value, min, max) =>
+  Number.isFinite (max)
+    ? Number.isFinite (min)
+        ? Math.max (Math.min (value, max), min)
+        : Math.min (value, max)
+    : Number.isFinite (min) ? Math.max (value, min) : value
 
-const randomRange = (min, max) => Math.random () * (max - min) + min;
+const randomRange = (min, max) => Math.random () * (max - min) + min
 
 const getViewportSize = (sizeWithScrollBars = false) =>
   sizeWithScrollBars
@@ -18,9 +21,4 @@ const getViewportSize = (sizeWithScrollBars = false) =>
         height: window.innerHeight,
       };
 
-export {
-  average,
-  getViewportSize,
-  limitToRange,
-  randomRange
-}
+export {average, getViewportSize, limitToRange, randomRange};
